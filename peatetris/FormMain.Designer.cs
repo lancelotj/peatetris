@@ -43,7 +43,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.btnTest = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.gameArea1 = new Tetris.GameArea();
+            this.gameArea1 = new GameArea();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
