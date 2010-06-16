@@ -41,9 +41,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.btnTest = new System.Windows.Forms.Button();
+            this.btnStart = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.gameArea1 = new GameArea();
+            this.timer = new System.Windows.Forms.Timer(this.components);
+            this.gameArea = new peatetris.GameArea();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -134,21 +135,21 @@
             this.label4.TabIndex = 8;
             this.label4.Text = "Rows";
             // 
-            // btnTest
+            // btnStart
             // 
-            this.btnTest.Location = new System.Drawing.Point(15, 254);
-            this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(75, 23);
-            this.btnTest.TabIndex = 10;
-            this.btnTest.TabStop = false;
-            this.btnTest.Text = "Test";
-            this.btnTest.UseVisualStyleBackColor = true;
-            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+            this.btnStart.Location = new System.Drawing.Point(15, 254);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(91, 23);
+            this.btnStart.TabIndex = 10;
+            this.btnStart.TabStop = false;
+            this.btnStart.Text = "Start";
+            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.panel2);
-            this.panel1.Controls.Add(this.btnTest);
+            this.panel1.Controls.Add(this.btnStart);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.label3);
@@ -156,23 +157,30 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel1.Location = new System.Drawing.Point(199, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(123, 402);
+            this.panel1.Size = new System.Drawing.Size(123, 410);
             this.panel1.TabIndex = 11;
             // 
-            // gameArea1
+            // timer
             // 
-            this.gameArea1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.gameArea1.Location = new System.Drawing.Point(0, 0);
-            this.gameArea1.Name = "gameArea1";
-            this.gameArea1.Size = new System.Drawing.Size(200, 400);
-            this.gameArea1.TabIndex = 9;
+            this.timer.Interval = 1000;
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
+            // 
+            // gameArea
+            // 
+            this.gameArea.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.gameArea.Location = new System.Drawing.Point(0, 0);
+            this.gameArea.Name = "gameArea";
+            this.gameArea.Size = new System.Drawing.Size(200, 400);
+            this.gameArea.TabIndex = 9;
+            this.gameArea.StopMoveEvent += new System.EventHandler(this.gameArea_StopMoveEvent);
+            this.gameArea.StartNewEvent += new System.EventHandler(this.gameArea_StartNewEvent);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(322, 402);
-            this.Controls.Add(this.gameArea1);
+            this.ClientSize = new System.Drawing.Size(322, 410);
+            this.Controls.Add(this.gameArea);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.KeyPreview = true;
@@ -200,9 +208,10 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private GameArea gameArea1;
-        private System.Windows.Forms.Button btnTest;
+        private GameArea gameArea;
+        private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Timer timer;
     }
 }
 

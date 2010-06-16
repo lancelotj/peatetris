@@ -1,4 +1,23 @@
-﻿using System;
+﻿/*
+   Author: Lance Jian
+
+   Distributed under the terms of the GPL (GNU Public License)
+
+   peatetris is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,11 +26,10 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 namespace peatetris {
     /// <summary>
-    ///   This is where all the blocks will be displayed and manipulated.
-    ///   The game area does not include the title screen, the score,
-    ///   or the Next Block section.
+    /// This is where all the blocks will be displayed and manipulated.
+    /// The game area does not include the title screen, the score,
+    /// or the Next Block section.
     /// </summary>
-
     public class GameArea : Panel {
         #region constructor
         /// <summary>
@@ -29,6 +47,19 @@ namespace peatetris {
                 }
         }
         #endregion
+
+        #region Public events
+        /// <summary>
+        /// Fires when the block reaches the bottom and cannot be moved.
+        /// </summary>
+        public event EventHandler StopMoveEvent;
+        /// <summary>
+        /// Fires when the lines are eliminated, the current block is cleared
+        /// and ready to start a new block.
+        /// </summary>
+        public event EventHandler StartNewEvent;
+        #endregion
+
         #region public properties
         /// <summary>
         /// Number of rows
@@ -44,6 +75,7 @@ namespace peatetris {
         }
 
         #endregion
+
         #region public methods
         /// <summary>
         /// Return the square at the specified location. Otherwise,
@@ -123,17 +155,27 @@ namespace peatetris {
                 currentBlock.Right();
         }
         /// <summary>
-        /// Move block down.
+        /// Move block down. If it reaches the bottom, fire the StopMoveEvent. 
+        /// It will then check if there are any lines that need to be eliminated.
         /// </summary>
         public void MoveDown() {
-            if (currentBlock != null) {
-                if (!currentBlock.CanMoveDown()) {
-                    EliminateLines(currentBlock.BottomIndex());
-                    currentBlock = null;
-                    return;
-                }
+            if (currentBlock == null) {
+                return;
+            }
+            if (currentBlock.CanMoveDown()) {
                 currentBlock.Down();
             }
+            else {
+                if (StopMoveEvent != null) {
+                    StopMoveEvent(this, null);
+                }
+                EliminateLines(currentBlock.BottomIndex());
+                currentBlock = null;
+                if (StartNewEvent != null) {
+                    StartNewEvent(this, null);
+                }
+            }
+
         }
 
         /// <summary>
@@ -157,25 +199,26 @@ namespace peatetris {
                         elim = false;
                         break;
                     }
-                if (elim){
-                    for (int j = 0; j < columns; j++)
-                        gameArray[i, j].ClearEvents(); // unregister events, prevent memory leak.
-                    for (int k = i; k > 0; k--)
-                        for (int j = 0; j < columns; j++) {
-                            gameArray[k, j] = gameArray[k - 1, j];
-                            gameArray[k, j].Location = new Point(j, k);
-                        }
-                    for (int j = 0; j < columns; j++) {
-                        gameArray[0, j] = new Square(j, 0);
-                        gameArray[0, j].ShowEvent += new EventHandler(ShowSquare);
-                        gameArray[0, j].HideEvent += new EventHandler(HideSquare);
-                    }
-                    i++; // one line is eliminated, so recheck this line.
-                    max++; // the upper bound is moved down
-                    Refresh();
+                if (!elim) {
+                    break;
                 }
+                for (int j = 0; j < columns; j++)
+                    gameArray[i, j].ClearEvents(); // unregister events, prevent memory leak.
+                for (int k = i; k > 0; k--)
+                    for (int j = 0; j < columns; j++) {
+                        gameArray[k, j] = gameArray[k - 1, j];
+                        gameArray[k, j].Location = new Point(j, k);
+                    }
+                for (int j = 0; j < columns; j++) {
+                    gameArray[0, j] = new Square(j, 0);
+                    gameArray[0, j].ShowEvent += new EventHandler(ShowSquare);
+                    gameArray[0, j].HideEvent += new EventHandler(HideSquare);
+                }
+                i++; // one line is eliminated, so recheck this line.
+                max++; // the upper bound is moved down
+                Refresh();
             }
-            
+
         }
 
         #endregion
