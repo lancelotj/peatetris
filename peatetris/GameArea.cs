@@ -58,6 +58,16 @@ namespace peatetris {
         /// and ready to start a new block.
         /// </summary>
         public event EventHandler StartNewEvent;
+        /// <summary>
+        /// The add score delegate
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public delegate void AddScoreEventHandler(object sender, AddScoreEventArgs e);
+        /// <summary>
+        /// Fires when detected a line elimination and need to add score;
+        /// </summary>
+        public event AddScoreEventHandler AddScoreEvent;
         #endregion
 
         #region public properties
@@ -191,8 +201,9 @@ namespace peatetris {
         /// </summary>
         /// <param name="row">the row to start checking</param>
         public void EliminateLines(int row) {
-            int max = Math.Max(row - 3, 0);
-            for (int i = row; i >= max; i--) {
+            int upper = Math.Max(row - 3, 0);
+            int elimCount = 0;
+            for (int i = row; i >= upper; i--) {
                 bool elim = true;
                 for (int j = 0; j < columns; j++)
                     if (!gameArray[i, j].Visible) {
@@ -202,6 +213,7 @@ namespace peatetris {
                 if (!elim) {
                     break;
                 }
+                elimCount++;
                 for (int j = 0; j < columns; j++)
                     gameArray[i, j].ClearEvents(); // unregister events, prevent memory leak.
                 for (int k = i; k > 0; k--)
@@ -215,8 +227,11 @@ namespace peatetris {
                     gameArray[0, j].HideEvent += new EventHandler(HideSquare);
                 }
                 i++; // one line is eliminated, so recheck this line.
-                max++; // the upper bound is moved down
+                upper++; // the upper bound is moved down
                 Refresh();
+            }
+            if (elimCount != 0 && AddScoreEvent != null) {
+                AddScoreEvent(this, new AddScoreEventArgs(elimCount));
             }
 
         }
@@ -281,4 +296,13 @@ namespace peatetris {
         private int squareSize = 20;
         #endregion
     }
+
+    public class AddScoreEventArgs : EventArgs {
+        public int Count {get; set;}
+        public AddScoreEventArgs(int count) {
+            Count = count;
+        }
+    }
+
+   
 }

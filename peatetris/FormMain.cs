@@ -107,5 +107,22 @@ namespace peatetris {
             gameArea.NewBlock();
             timer.Start();
         }
+
+        private void gameArea_AddScoreEvent(object sender, AddScoreEventArgs e) {
+            score += 5*e.Count*e.Count + 5;
+            elimRows += e.Count;
+            lbElimRows.Text = "Rows: " + elimRows.ToString();
+            lbScore.Text = "Score: " + score.ToString();
+        }
+
+        /// <summary>
+        /// The game score
+        /// </summary>
+        private int score = 0;
+        
+        /// <summary>
+        /// Eliminated rows count
+        /// </summary>
+        private int elimRows = 0;
     }
 }
