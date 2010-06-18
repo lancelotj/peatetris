@@ -84,6 +84,13 @@ namespace peatetris {
             get { return columns; }
         }
 
+        /// <summary>
+        /// Gets or sets current dropping block.
+        /// </summary>
+        public Block CurrentBlock {
+            get { return currentBlock; }
+            set { currentBlock = value; }
+        }
         #endregion
 
         #region public methods
@@ -123,32 +130,32 @@ namespace peatetris {
         /// Create a new random block, selecting from all possible blocks.
         /// </summary>
         public void NewBlock() {
-
+            Block newBlk;
             BlockType type = (BlockType)rnd.Next(7);
             switch (type) {
                 case BlockType.I:
-                    currentBlock = new IBlock(this, 3, 0);
+                    newBlk = new IBlock(this, 3, 0);
                     break;
                 case BlockType.J:
-                    currentBlock = new JBlock(this, 3, 0);
+                    newBlk = new JBlock(this, 3, 0);
                     break;
                 case BlockType.L:
-                    currentBlock = new LBlock(this, 3, 0);
+                    newBlk = new LBlock(this, 3, 0);
                     break;
                 case BlockType.S:
-                    currentBlock = new SBlock(this, 3, 0);
+                    newBlk = new SBlock(this, 3, 0);
                     break;
                 case BlockType.Z:
-                    currentBlock = new ZBlock(this, 3, 0);
+                    newBlk = new ZBlock(this, 3, 0);
                     break;
                 case BlockType.O:
-                    currentBlock = new OBlock(this, 3, 0);
+                    newBlk = new OBlock(this, 3, 0);
                     break;
                 case BlockType.T:
-                    currentBlock = new TBlock(this, 3, 0);
+                    newBlk = new TBlock(this, 3, 0);
                     break;
             }
-            currentBlock.Show();
+            return newBlk;
         }
         /// <summary>
         /// Move block left.

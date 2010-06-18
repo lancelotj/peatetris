@@ -47,7 +47,9 @@ namespace peatetris {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnStart_Click(object sender, EventArgs e) {
-            gameArea.NewBlock();
+            gameArea.CurrentBlock = gameArea.NewBlock();
+            nextBlk = gameArea.NewBlock();
+            gameArea.CurrentBlock.Show();
             timer.Start();
             //this.Focus(); 
         }
@@ -104,7 +106,9 @@ namespace peatetris {
         }
 
         private void gameArea_StartNewEvent(object sender, EventArgs e) {
-            gameArea.NewBlock();
+            nextBlock.Show();
+            gameArea.CurrentBlock = nextBlock;
+            nextBlock = gameArea.NewBlock();
             timer.Start();
         }
 
@@ -124,5 +128,10 @@ namespace peatetris {
         /// Eliminated rows count
         /// </summary>
         private int elimRows = 0;
+
+        /// <summary>
+        /// The next block to be dropped.
+        /// </summary>
+        private Block nextBlock = null;
     }
 }
