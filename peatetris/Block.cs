@@ -70,18 +70,29 @@ namespace peatetris {
                 squares = GetSquares(location.X, location.Y, 0);
             }
         }
-
+        /// <summary>
+        /// Collision detection, tests if next position is not occupied.
+        /// </summary>
+        /// <param name="dest">the destination position</param>
+        /// <returns>true if the block can move to the destination</returns>
+        public bool CanMove(Square[] dest) {
+            for (int i = 0; i < dest.Length; i++) {
+                if (dest[i] == null || dest[i].Visible)
+                    return false;
+            }
+            return true;
+        }
         /// <summary>
         /// Moves the block left.
         /// </summary>
         public void Left() {
             Square[] dest = GetSquares(location.X - 1, location.Y, patternId);
+            Hide();
             if (CanMove(dest)) {
-                Hide();
                 location.X -= 1;
                 squares = dest;
-                Show();
             }
+            Show();
         }
 
         /// <summary>
@@ -89,32 +100,39 @@ namespace peatetris {
         /// </summary>
         public void Right() {
             Square[] dest = GetSquares(location.X + 1, location.Y, patternId);
+            Hide();
             if (CanMove(dest)) {
-                Hide();
                 location.X += 1;
                 squares = dest;
-                Show();
             }
+            Show();
         }
         /// <summary>
         /// Moves the block down.
         /// </summary>
         public void Down() {
             Square[] dest = GetSquares(location.X, location.Y + 1, patternId);
+            Hide();
             if (CanMove(dest)) {
-                Hide();
                 location.Y += 1;
                 squares = dest;
-                Show();
             }
+            Show();
         }
 
         /// <summary>
         /// Tests if the block can move down, used for detect end of the movements.
         /// </summary>
         public bool CanMoveDown() {
+            Hide();
             Square[] dest = GetSquares(location.X, location.Y + 1, patternId);
-            return CanMove(dest);
+            bool ret = CanMove(dest);
+            Show();
+            return ret;
+        }
+
+        public bool CanShow() {
+            return CanMove(squares);
         }
 
         /// <summary>
@@ -124,13 +142,13 @@ namespace peatetris {
             if (patterns.Count == 0)
                 return;
             int pid = (patternId + 1) % patterns.Count;
+            Hide();
             Square[] dest = GetSquares(location.X, location.Y, pid);
             if (CanMove(dest)) {
-                Hide();
                 patternId = pid;
                 squares = dest;
-                Show();
             }
+            Show();
         }
 
         /// <summary>
@@ -188,20 +206,6 @@ namespace peatetris {
         /// </summary>
         protected List<Point[]> Patterns {
             get { return patterns; }
-        }
-
-
-        /// <summary>
-        /// Collision detection, tests if next position is not occupied.
-        /// </summary>
-        /// <param name="dest">the destination position</param>
-        /// <returns>true if the block can move to the destination</returns>
-        private bool CanMove(Square[] dest) {
-            for (int i = 0; i < dest.Length; i++) {
-                if (dest[i] == null || (dest[i].Visible && !squares.Contains(dest[i])))
-                    return false;
-            }
-            return true;
         }
 
         /// <summary>

@@ -41,14 +41,14 @@ namespace peatetris {
         public FormMain() {
             InitializeComponent();
             // pnlNext
-            pnlNext = new BlockArea(6, 6);
+            pnlNext = new BlockArea(4, 4);
             panel1.Controls.Add(this.pnlNext);
-            pnlNext.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            //pnlNext.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             pnlNext.CurrentBlock = null;
-            pnlNext.Location = new System.Drawing.Point(17, 21);
+            pnlNext.Location = new System.Drawing.Point(5, 21);
             pnlNext.Name = "pnlNext";
-            pnlNext.Size = new System.Drawing.Size(90, 90);
-            pnlNext.TabIndex = 1;
+            pnlNext.Size = new System.Drawing.Size(80, 80);
+            //pnlNext.TabIndex = 1;
         }
         /// <summary>
         /// Handles the start button click event.
@@ -56,12 +56,27 @@ namespace peatetris {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnStart_Click(object sender, EventArgs e) {
-            gameArea.CurrentBlock = gameArea.NewBlock(gameArea, 3, 0);
-            nextBlock = gameArea.NewBlock(pnlNext, 1, 1);
-            gameArea.CurrentBlock.Show();
-            nextBlock.Show();
-            timer.Start();
-            //this.Focus(); 
+            if (btnStart.Text == "Start") {
+                gameArea.Clear();
+                pnlNext.Clear();
+                gameArea.CurrentBlock = gameArea.NewBlock(gameArea, 3, 0);
+                nextBlock = gameArea.NewBlock(pnlNext, 0, 0);
+                gameArea.CurrentBlock.Show();
+                
+                nextBlock.Show();
+                timer.Start();
+                btnStart.Text = "Pause";
+                //this.Focus(); 
+            }
+            else if (btnStart.Text == "Pause") {
+                timer.Stop();
+                btnStart.Text = "Paused";
+            }
+            else if (btnStart.Text == "Paused") {
+                timer.Start();
+                btnStart.Text = "Pause";
+            }
+            
         }
         /// <summary>
         /// Handles the up/down/left/right key down event.
@@ -70,6 +85,9 @@ namespace peatetris {
         /// <param name="keyData">windows message data</param>
         /// <returns>true if the message is handled</returns>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+            if (btnStart.Text == "Paused" || btnStart.Text == "Start") {
+                return false;
+            }
             if (msg.Msg == WM_KEYDOWN) {
                 switch (keyData) {
                     case Keys.Left:
@@ -125,13 +143,23 @@ namespace peatetris {
             gameArea.CurrentBlock = nextBlock;
             gameArea.CurrentBlock.BlockArea = gameArea;
             gameArea.CurrentBlock.Location = new Point(3, 0);
+            // cannot move anymore
+            if (!gameArea.CurrentBlock.CanShow()) {
+                timer.Stop();
+                btnStart.Text = "Start";
+                return;
+            }
             gameArea.CurrentBlock.Show();
 
-            nextBlock = gameArea.NewBlock(pnlNext, 1, 1);
+            nextBlock = gameArea.NewBlock(pnlNext, 0, 0);
             nextBlock.Show();
             timer.Start();
         }
-
+        /// <summary>
+        /// Happens when there are rows eliminated.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void gameArea_AddScoreEvent(object sender, AddScoreEventArgs e) {
             score += 5 * e.Count * e.Count + 5;
             elimRows += e.Count;

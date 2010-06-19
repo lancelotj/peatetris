@@ -99,8 +99,18 @@ namespace peatetris
             return GameArray[y, x];
         }
 
+        /// <summary>
+        /// Clean up the area, hide all squares.
+        /// </summary>
+        public void Clear() {
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    gameArray[i, j].Hide();
+                }
+            }
+        }
         #endregion
-        
+
         #region protected methods
 
         /// <summary>
