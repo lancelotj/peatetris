@@ -31,11 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.mainMenu1 = new System.Windows.Forms.MainMenu(this.components);
             this.menuItem1 = new System.Windows.Forms.MenuItem();
-            this.menuItem3 = new System.Windows.Forms.MenuItem();
             this.menuItem4 = new System.Windows.Forms.MenuItem();
             this.miExit = new System.Windows.Forms.MenuItem();
-            this.menuItem5 = new System.Windows.Forms.MenuItem();
-            this.menuItem6 = new System.Windows.Forms.MenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.lbScore = new System.Windows.Forms.Label();
             this.btnStart = new System.Windows.Forms.Button();
@@ -49,22 +46,15 @@
             // mainMenu1
             // 
             this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuItem1,
-            this.menuItem5});
+            this.menuItem1});
             // 
             // menuItem1
             // 
             this.menuItem1.Index = 0;
             this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuItem3,
             this.menuItem4,
             this.miExit});
             this.menuItem1.Text = "File";
-            // 
-            // menuItem3
-            // 
-            this.menuItem3.Index = 0;
-            this.menuItem3.Text = "New";
             // 
             // menuItem4
             // 
@@ -73,21 +63,9 @@
             // 
             // miExit
             // 
-            this.miExit.Index = 2;
+            
             this.miExit.Text = "Exit";
             this.miExit.Click += new System.EventHandler(this.miExit_Click);
-            // 
-            // menuItem5
-            // 
-            this.menuItem5.Index = 1;
-            this.menuItem5.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuItem6});
-            this.menuItem5.Text = "Tools";
-            // 
-            // menuItem6
-            // 
-            this.menuItem6.Index = 0;
-            this.menuItem6.Text = "Options...";
             // 
             // label1
             // 
@@ -181,10 +159,7 @@
         private System.Windows.Forms.MenuItem menuItem1;
         private System.Windows.Forms.MenuItem miExit;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.MenuItem menuItem3;
         private System.Windows.Forms.MenuItem menuItem4;
-        private System.Windows.Forms.MenuItem menuItem5;
-        private System.Windows.Forms.MenuItem menuItem6;
         private System.Windows.Forms.Label lbScore;
         private GameArea gameArea;
         private System.Windows.Forms.Button btnStart;

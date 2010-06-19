@@ -205,9 +205,15 @@ namespace peatetris {
 
         #endregion
     }
-
+    /// <summary>
+    /// Event args used when eliminate lines.
+    /// </summary>
     public class AddScoreEventArgs : EventArgs {
         public int Count {get; set;}
+        /// <summary>
+        /// Creates the instance.
+        /// </summary>
+        /// <param name="count">how many lines are eliminated</param>
         public AddScoreEventArgs(int count) {
             Count = count;
         }

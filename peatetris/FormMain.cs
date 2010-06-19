@@ -59,6 +59,10 @@ namespace peatetris {
             if (btnStart.Text == "Start") {
                 gameArea.Clear();
                 pnlNext.Clear();
+                score = 0;
+                elimRows = 0;
+                lbElimRows.Text = "Rows: 0";
+                lbScore.Text = "Score: 0";
                 gameArea.CurrentBlock = gameArea.NewBlock(gameArea, 3, 0);
                 nextBlock = gameArea.NewBlock(pnlNext, 0, 0);
                 gameArea.CurrentBlock.Show();
