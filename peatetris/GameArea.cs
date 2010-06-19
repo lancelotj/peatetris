@@ -163,13 +163,14 @@ namespace peatetris {
             int elimCount = 0;
             for (int i = row; i >= upper; i--) {
                 bool elim = true;
-                for (int j = 0; j < Cols; j++)
+                for (int j = 0; j < Cols; j++) {
                     if (!GameArray[i, j].Visible) {
                         elim = false;
                         break;
                     }
+                }
                 if (!elim) {
-                    break;
+                    continue;
                 }
                 elimCount++;
                 for (int j = 0; j < Cols; j++)
