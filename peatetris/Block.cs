@@ -14,13 +14,61 @@ namespace peatetris {
     /// Represents a block of the game.
     /// <summary>
     public abstract class Block {
-        public Block(GameArea gameArea, int x, int y) {
-            this.gameArea = gameArea;
+        /// <summary>
+        /// Creates a block.
+        /// </summary>
+        /// <param name="blockArea">the BlockArea to stay on</param>
+        /// <param name="x">the initial x</param>
+        /// <param name="y">the inital y</param>
+        public Block(BlockArea blockArea, int x, int y) {
+            this.blockArea = blockArea;
             location.X = x;
             location.Y = y;
             patterns = new List<Point[]>();
             InitPatterns();
             squares = GetSquares(location.X, location.Y, 0);
+        }
+
+        /// <summary>
+        /// The location of the block.
+        /// </summary>
+        public Point Location {
+            get { return location; }
+            set {
+                location = value;
+                squares = GetSquares(location.X, location.Y, patternId);
+            }
+        }
+        /// <summary>
+        /// The foreground color of the block.
+        /// </summary>
+        public Color ForeColor {
+            get { return foreColor; }
+            set { foreColor = value; }
+        }
+        /// <summary>
+        /// The background color of the block.
+        /// </summary>
+        public Color CenterColor {
+            get { return centerColor; }
+            set { centerColor = value; }
+        }
+        /// <summary>
+        /// The squares array of the block.
+        /// </summary>
+        public Square[] Squares {
+            get { return squares; }
+        }
+
+        /// <summary>
+        /// Gets or sets the BlockArea that the current block belongs to.
+        /// </summary>
+        public BlockArea BlockArea {
+            get { return blockArea; }
+            set {
+                blockArea = value;
+                squares = GetSquares(location.X, location.Y, 0);
+            }
         }
 
         /// <summary>
@@ -116,33 +164,6 @@ namespace peatetris {
         }
 
 
-        /// <summary>
-        /// The location of the block.
-        /// </summary>
-        public Point Location {
-            get { return location; }
-            set { location = value; }
-        }
-        /// <summary>
-        /// The foreground color of the block.
-        /// </summary>
-        public Color ForeColor {
-            get { return foreColor; }
-            set { foreColor = value; }
-        }
-        /// <summary>
-        /// The background color of the block.
-        /// </summary>
-        public Color CenterColor {
-            get { return centerColor; }
-            set { centerColor = value; }
-        }
-        /// <summary>
-        /// The squares array of the block.
-        /// </summary>
-        public Square[] Squares {
-            get { return squares; }
-        }
 
         /// <summary>
         /// Init all the patterns of the block, needs to be overriden by child
@@ -158,7 +179,7 @@ namespace peatetris {
                 return null;
             Square[] result = new Square[4];
             for (int i = 0; i < 4; i++)
-                result[i] = gameArea.GetSquare(x + patterns[patternId][i].X, y + patterns[patternId][i].Y);
+                result[i] = blockArea.GetSquare(x + patterns[patternId][i].X, y + patterns[patternId][i].Y);
             return result;
         }
 
@@ -169,13 +190,7 @@ namespace peatetris {
             get { return patterns; }
         }
 
-        /// <summary>
-        /// Gets the game area for display.
-        /// </summary>
-        protected GameArea GameArea {
-            get { return gameArea; }
-        }
-        
+
         /// <summary>
         /// Collision detection, tests if next position is not occupied.
         /// </summary>
@@ -196,7 +211,7 @@ namespace peatetris {
         /// <summary>
         /// the game area to display the block.
         /// </summary>
-        private GameArea gameArea;
+        private BlockArea blockArea;
         /// <summary>
         /// The forecolor of the block.
         /// </summary>
@@ -222,8 +237,8 @@ namespace peatetris {
     /// T block. Top left location is the top left square of the block.
     /// </summary>
     public class TBlock : Block {
-        public TBlock(GameArea gameArea, int x, int y)
-            : base(gameArea, x, y) {
+        public TBlock(BlockArea blockArea, int x, int y)
+            : base(blockArea, x, y) {
             ForeColor = Color.Purple;
             CenterColor = Color.Azure;
         }
@@ -239,8 +254,8 @@ namespace peatetris {
     /// I Block. Top left location is one square to the left of the top square.
     /// </summary>
     public class IBlock : Block {
-        public IBlock(GameArea gameArea, int x, int y)
-            : base(gameArea, x, y) {
+        public IBlock(BlockArea blockArea, int x, int y)
+            : base(blockArea, x, y) {
             ForeColor = Color.Red;
             CenterColor = Color.Azure;
         }
@@ -253,8 +268,8 @@ namespace peatetris {
     /// J Block. Top left location is one square to the left of the top square.
     /// </summary>
     public class JBlock : Block {
-        public JBlock(GameArea gameArea, int x, int y)
-            : base(gameArea, x, y) {
+        public JBlock(BlockArea blockArea, int x, int y)
+            : base(blockArea, x, y) {
             ForeColor = Color.Black;
             CenterColor = Color.Azure;
         }
@@ -271,8 +286,8 @@ namespace peatetris {
     /// L Block. Top left location is one square to the left of the top square.
     /// </summary>
     public class LBlock : Block {
-        public LBlock(GameArea gameArea, int x, int y)
-            : base(gameArea, x, y) {
+        public LBlock(BlockArea blockArea, int x, int y)
+            : base(blockArea, x, y) {
             ForeColor = Color.Magenta;
             CenterColor = Color.Azure;
         }
@@ -287,8 +302,8 @@ namespace peatetris {
     /// S Block. Top left location is one square to the left of the top two squares.
     /// </summary>
     public class SBlock : Block {
-        public SBlock(GameArea gameArea, int x, int y)
-            : base(gameArea, x, y) {
+        public SBlock(BlockArea blockArea, int x, int y)
+            : base(blockArea, x, y) {
             ForeColor = Color.Green;
             CenterColor = Color.Azure;
         }
@@ -301,8 +316,8 @@ namespace peatetris {
     /// Z Block. Top left location is the top left square.
     /// </summary>
     public class ZBlock : Block {
-        public ZBlock(GameArea gameArea, int x, int y)
-            : base(gameArea, x, y) {
+        public ZBlock(BlockArea blockArea, int x, int y)
+            : base(blockArea, x, y) {
             ForeColor = Color.Orange;
             CenterColor = Color.Azure;
         }
@@ -315,8 +330,8 @@ namespace peatetris {
     /// O Block. Top left location is the top left square.
     /// </summary>
     public class OBlock : Block {
-        public OBlock(GameArea gameArea, int x, int y)
-            : base(gameArea, x, y) {
+        public OBlock(BlockArea blockArea, int x, int y)
+            : base(blockArea, x, y) {
             ForeColor = Color.Blue;
             CenterColor = Color.Azure;
         }

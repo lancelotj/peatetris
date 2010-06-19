@@ -30,21 +30,24 @@ namespace peatetris {
     /// The game area does not include the title screen, the score,
     /// or the Next Block section.
     /// </summary>
-    public class GameArea : Panel {
+    public class GameArea : BlockArea {
+        #region constants
+        /// <summary>
+        /// The default number of rows of a game area.
+        /// </summary>
+        public const int DEF_ROWS = 20;
+        /// <summary>
+        /// The default number of columns of a game area.
+        /// </summary>
+        public const int DEF_COLS = 10;
+        #endregion
         #region constructor
         /// <summary>
         /// Create a two-dimensional array of pre-defined size.
         /// add an event handler to show and hide the squares
         /// in each block.
         /// </summary>
-        public GameArea() {
-            gameArray = new Square[rows, columns];
-            for (int i = 0; i < rows; i++)
-                for (int j = 0; j < columns; j++) {
-                    gameArray[i, j] = new Square(j, i);
-                    gameArray[i, j].ShowEvent += new EventHandler(ShowSquare);
-                    gameArray[i, j].HideEvent += new EventHandler(HideSquare);
-                }
+        public GameArea():base(DEF_ROWS, DEF_COLS) {
         }
         #endregion
 
@@ -70,89 +73,37 @@ namespace peatetris {
         public event AddScoreEventHandler AddScoreEvent;
         #endregion
 
-        #region public properties
-        /// <summary>
-        /// Number of rows
-        /// </summary>
-        public int Rows {
-            get { return rows; }
-        }
-        /// <summary>
-        /// Number of columns;
-        /// </summary>
-        public int Columns {
-            get { return columns; }
-        }
-
-        /// <summary>
-        /// Gets or sets current dropping block.
-        /// </summary>
-        public Block CurrentBlock {
-            get { return currentBlock; }
-            set { currentBlock = value; }
-        }
-        #endregion
-
         #region public methods
-        /// <summary>
-        /// Return the square at the specified location. Otherwise,
-        /// throw an exception.
-        /// </summary>
-        public Square GetSquare(int x, int y) {
-            if (x < 0 || x >= columns || y < 0 || y >= rows)
-                return null;
-            //throw new ArgumentOutOfRangeException();
-            return gameArray[y, x];
-        }
-
-
-        /// <summary>
-        /// Get the square from the sender object,
-        /// define the size of a square, and create a gradient
-        /// brush to fill the square with.
-        /// </summary>
-        public void ShowSquare(object sender, EventArgs e) {
-            Square sq = sender as Square;
-            Graphics g = CreateGraphics();
-            DrawSquare(g, sq);
-            g.Dispose();
-        }
-        /// <summary>
-        /// Draw over the square with the background colour.
-        /// </summary>
-        public void HideSquare(object sender, EventArgs e) {
-            Square sq = sender as Square;
-            Graphics g = CreateGraphics();
-            g.FillRectangle(new SolidBrush(BackColor), sq.Location.X * squareSize, sq.Location.Y * squareSize, squareSize, squareSize);
-            g.Dispose();
-        }
         /// <summary>
         /// Create a new random block, selecting from all possible blocks.
         /// </summary>
-        public void NewBlock() {
-            Block newBlk;
+        /// <param name="area">the BlockArea to be displayed</param>
+        /// <param name="x">the initial x</param>
+        /// <param name="y">the initial y</param>
+        public Block NewBlock(BlockArea area, int x, int y) {
+            Block newBlk = null;
             BlockType type = (BlockType)rnd.Next(7);
             switch (type) {
                 case BlockType.I:
-                    newBlk = new IBlock(this, 3, 0);
+                    newBlk = new IBlock(area, x, y);
                     break;
                 case BlockType.J:
-                    newBlk = new JBlock(this, 3, 0);
+                    newBlk = new JBlock(area, x, y);
                     break;
                 case BlockType.L:
-                    newBlk = new LBlock(this, 3, 0);
+                    newBlk = new LBlock(area, x, y);
                     break;
                 case BlockType.S:
-                    newBlk = new SBlock(this, 3, 0);
+                    newBlk = new SBlock(area, x, y);
                     break;
                 case BlockType.Z:
-                    newBlk = new ZBlock(this, 3, 0);
+                    newBlk = new ZBlock(area, x, y);
                     break;
                 case BlockType.O:
-                    newBlk = new OBlock(this, 3, 0);
+                    newBlk = new OBlock(area, x, y);
                     break;
                 case BlockType.T:
-                    newBlk = new TBlock(this, 3, 0);
+                    newBlk = new TBlock(area, x, y);
                     break;
             }
             return newBlk;
@@ -161,33 +112,33 @@ namespace peatetris {
         /// Move block left.
         /// </summary>
         public void MoveLeft() {
-            if (currentBlock != null)
-                currentBlock.Left();
+            if (CurrentBlock != null)
+                CurrentBlock.Left();
         }
         /// <summary>
         /// Move block right
         /// </summary>
         public void MoveRight() {
-            if (currentBlock != null)
-                currentBlock.Right();
+            if (CurrentBlock != null)
+                CurrentBlock.Right();
         }
         /// <summary>
         /// Move block down. If it reaches the bottom, fire the StopMoveEvent. 
         /// It will then check if there are any lines that need to be eliminated.
         /// </summary>
         public void MoveDown() {
-            if (currentBlock == null) {
+            if (CurrentBlock == null) {
                 return;
             }
-            if (currentBlock.CanMoveDown()) {
-                currentBlock.Down();
+            if (CurrentBlock.CanMoveDown()) {
+                CurrentBlock.Down();
             }
             else {
                 if (StopMoveEvent != null) {
                     StopMoveEvent(this, null);
                 }
-                EliminateLines(currentBlock.BottomIndex());
-                currentBlock = null;
+                EliminateLines(CurrentBlock.BottomIndex());
+                CurrentBlock = null;
                 if (StartNewEvent != null) {
                     StartNewEvent(this, null);
                 }
@@ -199,8 +150,8 @@ namespace peatetris {
         /// Rotate block
         /// </summary>
         public void RotateBlock() {
-            if (currentBlock != null)
-                currentBlock.Rotate();
+            if (CurrentBlock != null)
+                CurrentBlock.Rotate();
         }
 
         /// <summary>
@@ -212,8 +163,8 @@ namespace peatetris {
             int elimCount = 0;
             for (int i = row; i >= upper; i--) {
                 bool elim = true;
-                for (int j = 0; j < columns; j++)
-                    if (!gameArray[i, j].Visible) {
+                for (int j = 0; j < Cols; j++)
+                    if (!GameArray[i, j].Visible) {
                         elim = false;
                         break;
                     }
@@ -221,17 +172,17 @@ namespace peatetris {
                     break;
                 }
                 elimCount++;
-                for (int j = 0; j < columns; j++)
-                    gameArray[i, j].ClearEvents(); // unregister events, prevent memory leak.
+                for (int j = 0; j < Cols; j++)
+                    GameArray[i, j].ClearEvents(); // unregister events, prevent memory leak.
                 for (int k = i; k > 0; k--)
-                    for (int j = 0; j < columns; j++) {
-                        gameArray[k, j] = gameArray[k - 1, j];
-                        gameArray[k, j].Location = new Point(j, k);
+                    for (int j = 0; j < Cols; j++) {
+                        GameArray[k, j] = GameArray[k - 1, j];
+                        GameArray[k, j].Location = new Point(j, k);
                     }
-                for (int j = 0; j < columns; j++) {
-                    gameArray[0, j] = new Square(j, 0);
-                    gameArray[0, j].ShowEvent += new EventHandler(ShowSquare);
-                    gameArray[0, j].HideEvent += new EventHandler(HideSquare);
+                for (int j = 0; j < Cols; j++) {
+                    GameArray[0, j] = new Square(j, 0);
+                    GameArray[0, j].ShowEvent += new EventHandler(ShowSquare);
+                    GameArray[0, j].HideEvent += new EventHandler(HideSquare);
                 }
                 i++; // one line is eliminated, so recheck this line.
                 upper++; // the upper bound is moved down
@@ -245,62 +196,12 @@ namespace peatetris {
 
         #endregion
 
-        #region protected methods
-
-        /// <summary>
-        /// Repaint the visible squares when the game area needs to be repainted.
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnPaint(PaintEventArgs e) {
-            base.OnPaint(e);
-            for (int i = 0; i < rows; i++)
-                for (int j = 0; j < columns; j++) {
-                    Square sq = gameArray[i, j];
-                    if (sq.Visible)
-                        DrawSquare(e.Graphics, sq);
-                }
-        }
-        #endregion
-
         #region private members
-        /// <summary>
-        /// draw a square on a Graphics surface.
-        /// </summary>
-        private void DrawSquare(Graphics g, Square sq) {
-            GraphicsPath path = new GraphicsPath();
-            Rectangle rect = new Rectangle(sq.Location.X * squareSize, sq.Location.Y * squareSize, squareSize, squareSize);
-            path.AddRectangle(rect);
-            PathGradientBrush pthGrBrush = new PathGradientBrush(path);
-            pthGrBrush.CenterColor = sq.BackColor;
-            Color[] halo = { sq.ForeColor };
-            pthGrBrush.SurroundColors = halo;
-            g.FillRectangle(pthGrBrush, rect);
-        }
-
-        /// <summary>
-        /// Represents the squares array.
-        /// </summary>
-        private Square[,] gameArray;
-        /// <summary>
-        /// Number of rows of the game area;
-        /// </summary>
-        private int rows = 20;
-        /// <summary>
-        /// Number of columns of the game area;
-        /// </summary>
-        private int columns = 10;
-        /// <summary>
-        /// the current dropping block.
-        /// </summary>
-        private Block currentBlock;
         /// <summary>
         /// a random number generator.
         /// </summary>
         private Random rnd = new Random((int)DateTime.Now.Ticks);
-        /// <summary>
-        /// the size of a square.
-        /// </summary>
-        private int squareSize = 20;
+
         #endregion
     }
 

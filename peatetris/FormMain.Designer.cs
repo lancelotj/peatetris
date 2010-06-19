@@ -36,13 +36,12 @@
             this.miExit = new System.Windows.Forms.MenuItem();
             this.menuItem5 = new System.Windows.Forms.MenuItem();
             this.menuItem6 = new System.Windows.Forms.MenuItem();
-            this.panel2 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.lbScore = new System.Windows.Forms.Label();
             this.btnStart = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.timer = new System.Windows.Forms.Timer(this.components);
             this.lbElimRows = new System.Windows.Forms.Label();
+            this.timer = new System.Windows.Forms.Timer(this.components);
             this.gameArea = new peatetris.GameArea();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -90,14 +89,6 @@
             this.menuItem6.Index = 0;
             this.menuItem6.Text = "Options...";
             // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.panel2.Location = new System.Drawing.Point(17, 21);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(89, 76);
-            this.panel2.TabIndex = 1;
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -130,7 +121,6 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.lbElimRows);
-            this.panel1.Controls.Add(this.panel2);
             this.panel1.Controls.Add(this.btnStart);
             this.panel1.Controls.Add(this.lbScore);
             this.panel1.Controls.Add(this.label1);
@@ -139,11 +129,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(123, 410);
             this.panel1.TabIndex = 11;
-            // 
-            // timer
-            // 
-            this.timer.Interval = 1000;
-            this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // lbElimRows
             // 
@@ -154,9 +139,15 @@
             this.lbElimRows.TabIndex = 11;
             this.lbElimRows.Text = "Rows: 0";
             // 
+            // timer
+            // 
+            this.timer.Interval = 1000;
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
+            // 
             // gameArea
             // 
             this.gameArea.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.gameArea.CurrentBlock = null;
             this.gameArea.Location = new System.Drawing.Point(0, 0);
             this.gameArea.Name = "gameArea";
             this.gameArea.Size = new System.Drawing.Size(200, 400);
@@ -189,7 +180,6 @@
         private System.Windows.Forms.MainMenu mainMenu1;
         private System.Windows.Forms.MenuItem menuItem1;
         private System.Windows.Forms.MenuItem miExit;
-        private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.MenuItem menuItem3;
         private System.Windows.Forms.MenuItem menuItem4;
@@ -201,6 +191,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.Label lbElimRows;
+
     }
 }
 

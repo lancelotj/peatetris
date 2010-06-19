@@ -40,6 +40,15 @@ namespace peatetris {
         /// </summary>
         public FormMain() {
             InitializeComponent();
+            // pnlNext
+            pnlNext = new BlockArea(6, 6);
+            panel1.Controls.Add(this.pnlNext);
+            pnlNext.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            pnlNext.CurrentBlock = null;
+            pnlNext.Location = new System.Drawing.Point(17, 21);
+            pnlNext.Name = "pnlNext";
+            pnlNext.Size = new System.Drawing.Size(90, 90);
+            pnlNext.TabIndex = 1;
         }
         /// <summary>
         /// Handles the start button click event.
@@ -47,9 +56,10 @@ namespace peatetris {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnStart_Click(object sender, EventArgs e) {
-            gameArea.CurrentBlock = gameArea.NewBlock();
-            nextBlk = gameArea.NewBlock();
+            gameArea.CurrentBlock = gameArea.NewBlock(gameArea, 3, 0);
+            nextBlock = gameArea.NewBlock(pnlNext, 1, 1);
             gameArea.CurrentBlock.Show();
+            nextBlock.Show();
             timer.Start();
             //this.Focus(); 
         }
@@ -96,8 +106,7 @@ namespace peatetris {
         /// </summary>
         /// <param name="sender">this form</param>
         /// <param name="e">empty event arg</param>
-        private void timer_Tick(object sender, EventArgs e)
-        {
+        private void timer_Tick(object sender, EventArgs e) {
             gameArea.MoveDown();
         }
 
@@ -105,15 +114,26 @@ namespace peatetris {
             timer.Stop();
         }
 
+        /// <summary>
+        /// Creates a new block when the current block is stoped.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void gameArea_StartNewEvent(object sender, EventArgs e) {
-            nextBlock.Show();
+
+            nextBlock.Hide();
             gameArea.CurrentBlock = nextBlock;
-            nextBlock = gameArea.NewBlock();
+            gameArea.CurrentBlock.BlockArea = gameArea;
+            gameArea.CurrentBlock.Location = new Point(3, 0);
+            gameArea.CurrentBlock.Show();
+
+            nextBlock = gameArea.NewBlock(pnlNext, 1, 1);
+            nextBlock.Show();
             timer.Start();
         }
 
         private void gameArea_AddScoreEvent(object sender, AddScoreEventArgs e) {
-            score += 5*e.Count*e.Count + 5;
+            score += 5 * e.Count * e.Count + 5;
             elimRows += e.Count;
             lbElimRows.Text = "Rows: " + elimRows.ToString();
             lbScore.Text = "Score: " + score.ToString();
@@ -123,7 +143,7 @@ namespace peatetris {
         /// The game score
         /// </summary>
         private int score = 0;
-        
+
         /// <summary>
         /// Eliminated rows count
         /// </summary>
@@ -133,5 +153,10 @@ namespace peatetris {
         /// The next block to be dropped.
         /// </summary>
         private Block nextBlock = null;
+
+        /// <summary>
+        /// The display panel for the next block.
+        /// </summary>
+        private BlockArea pnlNext;
     }
 }
